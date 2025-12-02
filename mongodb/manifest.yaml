@@ -24,7 +24,7 @@ spec:
       containers:
       - name: mongodb
         image: joindevops/mongodb:v1
-        redinessProbe:
+        readinessProbe:
           tcpSocket:
             port: 27017
           initialDelaySeconds: 10
