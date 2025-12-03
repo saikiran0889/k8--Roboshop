@@ -17,22 +17,34 @@ spec:
   template:
     metadata:
       labels:
-       project: roboshop
-       component: redis
-       tier: database
+        project: roboshop
+        component: redis
+        tier: database
     spec:
       containers:
       - name: redis
         image: redis:7.0
         imagePullPolicy: Always
+
+        command: ["redis-server"]
+        args: ["--requirepass", "roboshop123"]
+
+        env:
+        - name: REDIS_PASSWORD
+          value: "roboshop123"
+
+        ports:
+        - containerPort: 6379
+
         readinessProbe:
           tcpSocket:
             port: 6379
           initialDelaySeconds: 10
           periodSeconds: 10
+
         livenessProbe:
           tcpSocket:
-            port: 8080
+            port: 6379   # FIXED
           initialDelaySeconds: 5
           periodSeconds: 5
 ---
@@ -47,8 +59,6 @@ spec:
     component: redis
     tier: database
   ports:
-    - protocol: TCP
-      port: 6379 # service port
-      targetPort: 6379 # container port
-
-
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
