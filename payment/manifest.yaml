@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: payment
+  namespace: roboshop
+data:
+  cart_host: "cart"
+  cart_port: "8080"
+  user_host: "user"
+  user_port: "8080"
+  amqp_host: "rabbitmq"
+  amqp_user: "roboshop"
+  amqp_pass: "roboshop123"
+ 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment
+  namespace: roboshop
+  labels:
+    project: roboshop
+    component: payment
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: roboshop
+      component: payment
+      tier: backend
+  template:
+    metadata:
+      labels:
+       project: roboshop
+       component: payment
+       tier: backend
+    spec:
+      containers:
+      - name: payment
+        image: joindevops/payment:v1
+        imagePullPolicy: Always
+        envFrom: 
+        - configMapRef: 
+            name: payment
+        ports:
+        - name: liveness-port
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: liveness-port
+          failureThreshold: 1
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: liveness-port
+          failureThreshold: 1
+          periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment
+  namespace: roboshop
+spec:
+  selector:
+    project: roboshop
+    component: payment
+    tier: backend
+  ports:
+    - protocol: TCP
+      port: 8080 # service port
+      targetPort: 8080 # container port
+
+
