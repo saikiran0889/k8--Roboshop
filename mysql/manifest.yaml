@@ -36,15 +36,16 @@ spec:
       - name: mysql
         image: joindevops/mysql:v1
         imagePullPolicy: Always
-
         env:
-        - name: MONGO_INITDB_ROOT_USERNAME
-          value: "admin"
-        - name: MONGO_INITDB_ROOT_PASSWORD
+        - name: MYSQL_ROOT_PASSWORD
           value: "roboshop123"
-
         ports:
         - containerPort: 3306
+        volumeMounts:
+        - name: mysql-config
+          mountPath: /etc/mysql/conf.d/my.cnf
+          subPath: my.cnf
+      
 
         # readinessProbe:
         #   tcpSocket:
@@ -57,10 +58,10 @@ spec:
         #     port: 3306   # FIXED
         #   initialDelaySeconds: 5
         #   periodSeconds: 5
-        volumeMounts:
-        - name: mysql-config
-          mountPath: /etc/mysql/conf.d/my.cnf
-          subPath: my.cnf
+    volumes:
+    - name: mysql-config
+      configMap:
+        name: mysql
     volumes:
             - name: mysql-config
               configMap:
