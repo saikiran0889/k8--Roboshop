@@ -4,15 +4,15 @@ metadata:
   name: shipping
   namespace: roboshop
 data:
-  cart_endpoint: "cart:8080"
-  db_host: "mysql"
-
+  CART_ENDPOINT: "cart:8080"
+  DB_HOST: "mysql"
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: shipping
   namespace: roboshop
+  # these are replica set labels
   labels:
     project: roboshop
     component: shipping
@@ -20,10 +20,12 @@ metadata:
 spec:
   replicas: 1
   selector:
+    # these labels are used to select pods
     matchLabels:
       project: roboshop
       component: shipping
       tier: backend
+  # pod definition
   template:
     metadata:
       labels:
@@ -35,8 +37,8 @@ spec:
       - name: shipping
         image: joindevops/shipping:v1
         imagePullPolicy: Always
-        envFrom: 
-        - configMapRef: 
+        envFrom:
+        - configMapRef:
             name: shipping
         ports:
         - name: liveness-port
@@ -53,14 +55,6 @@ spec:
             port: liveness-port
           failureThreshold: 1
           periodSeconds: 15
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "200m"
-            memory: "256Mi"
-
 ---
 apiVersion: v1
 kind: Service
@@ -74,5 +68,5 @@ spec:
     tier: backend
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 8080 # service port
+      targetPort: 8080 # container port
