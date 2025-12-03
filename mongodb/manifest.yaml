@@ -25,14 +25,25 @@ spec:
       - name: mongodb
         image: joindevops/mongodb:v1
         imagePullPolicy: Always
+
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: "admin"
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: "roboshop123"
+
+        ports:
+        - containerPort: 27017
+
         readinessProbe:
           tcpSocket:
             port: 27017
           initialDelaySeconds: 10
           periodSeconds: 10
+
         livenessProbe:
           tcpSocket:
-            port: 8080
+            port: 27017   # FIXED
           initialDelaySeconds: 5
           periodSeconds: 5
 ---
@@ -48,7 +59,5 @@ spec:
     tier: database
   ports:
     - protocol: TCP
-      port: 27017 # service port
-      targetPort: 27017 # container port
-
-
+      port: 27017
+      targetPort: 27017
