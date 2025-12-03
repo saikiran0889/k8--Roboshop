@@ -6,7 +6,7 @@ metadata:
 data:
   cart_endpoint: "cart:8080"
   db_host: "mysql"
- 
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -27,9 +27,9 @@ spec:
   template:
     metadata:
       labels:
-       project: roboshop
-       component: shipping
-       tier: backend
+        project: roboshop
+        component: shipping
+        tier: backend
     spec:
       containers:
       - name: shipping
@@ -53,6 +53,14 @@ spec:
             port: liveness-port
           failureThreshold: 1
           periodSeconds: 15
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+
 ---
 apiVersion: v1
 kind: Service
@@ -66,7 +74,5 @@ spec:
     tier: backend
   ports:
     - protocol: TCP
-      port: 8080 # service port
-      targetPort: 8080 # container port
-
-
+      port: 8080
+      targetPort: 8080
