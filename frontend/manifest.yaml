@@ -49,6 +49,7 @@ metadata:
   name: frontend
   namespace: roboshop
 spec:
+  typr: LoadBalancer
   selector:
     project: roboshop
     component: frontend
