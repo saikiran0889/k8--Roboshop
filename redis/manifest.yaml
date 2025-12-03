@@ -26,6 +26,7 @@ spec:
         image: redis:7.0
         imagePullPolicy: Always
 
+        # Redis needs password for Roboshop
         command: ["redis-server"]
         args: ["--requirepass", "roboshop123"]
 
@@ -44,7 +45,7 @@ spec:
 
         livenessProbe:
           tcpSocket:
-            port: 6379   # FIXED
+            port: 6379
           initialDelaySeconds: 5
           periodSeconds: 5
 ---
