@@ -6,7 +6,7 @@ metadata:
 data:
   redis_host: "redis"
   catalogue_host: "catalogue"
-  catalogue_port: 8080
+  catalogue_port: "8080"
  
 ---
 apiVersion: apps/v1
